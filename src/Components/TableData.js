@@ -1,55 +1,31 @@
 import React, { useState, Fragment } from "react";
 import TextField from "@material-ui/core/TextField";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 import {
   Table,
-  Divider,
   TableCell,
   TableBody,
   TableHead,
   TableRow,
-  Container,
-  Button,
 } from "@material-ui/core";
 
-import styled from "styled-components";
-
-const TableContainer = styled(Container)`
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  overflow-x: auto;
-`;
-
-const PlusButton = styled(Button)`
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  visibility: hidden;
-`;
-
-const PlusCell = styled(TableCell)`
-  width: 20px;
-  min-width: 20px;
-  padding: 0;
-  &:hover {
-    ${PlusButton} {
-      visibility: visible;
-    }
-  }
-`;
-
-const SingleColumnCell = styled(TableCell)`
-  width: 20px;
-  min-width: 20px;
-  padding: 0;
-`;
+import {
+  TableContainer,
+  DelButton,
+  DelButtonRow,
+  PlusButton,
+  PlusCell,
+  SingleColumnCell,
+  DataCell,
+} from "./TableDataStyles";
 
 const initialData = [
-  ["1", "2", "3"],
-  ["11", "22", "33"],
-  ["111", "222", "333"],
+  ["", "PETR4", "VALE3", "ITUB4"],
+  ["04/02/1998", "100", "50", "50"],
+  ["04/02/2010", "0", "50", "25"],
+  ["04/02/2021", "0", "0", "25"],
 ];
 
 const TabelaDados = () => {
@@ -59,35 +35,51 @@ const TabelaDados = () => {
     let newData = [...data];
     newData[index][index2] = value;
     setData(newData);
+    console.log(data);
   };
 
-  const addColumnhandler = (newindex) => {
+  const addDelColumnhandler = (index, add_del) => {
     let newData = [...data];
-    newData.forEach((arr) => arr.splice(newindex, 0, ""));
+    if(add_del=='add') {
+        newData.forEach((arr) => arr.splice(index, 0, ""));
+    } else {
+        newData.forEach(
+          (arr, ind) => (newData[ind] = arr.filter((e, i) => i != index))
+        );
+    }
     setData(newData);
     console.log(data);
   };
 
-  const addRowhandler = (newindex) => {
+  const addDelRowhandler = (index, add_del) => {
     let newData = [...data];
-    newData.splice(newindex, 0, Array(data[0].length).fill(""));
+    if(add_del=='add') {
+        newData.splice(index, 0, Array(data[0].length).fill(""));
+    } else {
+        newData = newData.filter((e, i) => i != index);
+    }
     setData(newData);
-    console.log(data);
   };
 
   const CriaButtonAddColumn = ({ index }) => (
     <PlusCell align="right" colSpan={1}>
       {index == 0 ? undefined : (
-        <PlusButton onClick={() => addColumnhandler(index)} style={{}}>
+        <PlusButton onClick={() => addDelColumnhandler(index, 'add')} style={{}}>
           +
         </PlusButton>
       )}
     </PlusCell>
   );
 
-  const CriaButtonAddRow = ({ index }) => (
+  const CriaButtonAddDelRow = ({ index }) => (
     <PlusCell align="right" colSpan={1}>
-      <PlusButton onClick={() => addRowhandler(index + 1)} style={{}}>
+      {/* linha 0 de ativos, não criar botão de adicionar coluna nem deletar */}
+      {index == 0 ? undefined : (
+        <DelButtonRow onClick={() => addDelRowhandler(index, 'del')}>
+          <DeleteForeverIcon></DeleteForeverIcon>
+        </DelButtonRow>
+      )}
+      <PlusButton onClick={() => addDelRowhandler(index + 1, 'add')}>
         <ExpandMoreIcon></ExpandMoreIcon>
       </PlusButton>
     </PlusCell>
@@ -101,7 +93,14 @@ const TabelaDados = () => {
             {data[0].map((row, index) => (
               <Fragment key={`${index}header`}>
                 <CriaButtonAddColumn index={index}></CriaButtonAddColumn>
-                <TableCell align="left" colSpan={3}></TableCell>
+                <TableCell align="left" colSpan={1}>
+                  {/* coluna 0 de datas, não criar botão de adicionar coluna nem deletar */}
+                  {index == 0 ? undefined : (
+                    <DelButton onClick={() => addDelColumnhandler(index,'del')}>
+                      <DeleteForeverIcon></DeleteForeverIcon>
+                    </DelButton>
+                  )}
+                </TableCell>
               </Fragment>
             ))}
             <CriaButtonAddColumn
@@ -113,14 +112,14 @@ const TabelaDados = () => {
         <TableBody>
           {data.map((row, index) => (
             <TableRow key={index}>
-              {/* <SingleColumnCell align="left" colSpan={1}></SingleColumnCell> */}
-              <CriaButtonAddRow index={index}></CriaButtonAddRow>
+              <CriaButtonAddDelRow index={index}></CriaButtonAddDelRow>
               {row.map((item, index2) => (
                 <Fragment key={`${index}-${index2}`}>
-                  <TableCell
+                  <DataCell
                     align="left"
-                    colSpan={3}
+                    colSpan={1}
                     key={`cell${index}-${index2}`}
+                    style={{ margin: "2px" }}
                   >
                     <TextField
                       key={`input${index}-${index2}`}
@@ -131,8 +130,11 @@ const TabelaDados = () => {
                         changeHandler(e.target.value, index, index2)
                       }
                     />
-                  </TableCell>
-                  <SingleColumnCell align="left" colSpan={1}></SingleColumnCell>
+                  </DataCell>
+                  <SingleColumnCell
+                    align="center"
+                    colSpan={1}
+                  ></SingleColumnCell>
                 </Fragment>
               ))}
             </TableRow>
