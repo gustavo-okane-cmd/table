@@ -1,8 +1,10 @@
 import React, { useState, Fragment } from "react";
 import TextField from "@material-ui/core/TextField";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 import {
   Table,
+  Divider,
   TableCell,
   TableBody,
   TableHead,
@@ -13,11 +15,35 @@ import {
 
 import styled from "styled-components";
 
-const PlusButton = styled(Button)`
+const TableContainer = styled(Container)`
   padding: 0;
   margin: 0;
-  min-width: 12px;
-  width: 12px;
+  width: 100%;
+  overflow-x: auto;
+`;
+
+const PlusButton = styled(Button)`
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  visibility: hidden;
+`;
+
+const PlusCell = styled(TableCell)`
+  width: 20px;
+  min-width: 20px;
+  padding: 0;
+  &:hover {
+    ${PlusButton} {
+      visibility: visible;
+    }
+  }
+`;
+
+const SingleColumnCell = styled(TableCell)`
+  width: 20px;
+  min-width: 20px;
+  padding: 0;
 `;
 
 const initialData = [
@@ -35,28 +61,40 @@ const TabelaDados = () => {
     setData(newData);
   };
 
-  const clickHandler = (newindex) => {
+  const addColumnhandler = (newindex) => {
     let newData = [...data];
     newData.forEach((arr) => arr.splice(newindex, 0, ""));
     setData(newData);
     console.log(data);
   };
 
+  const addRowhandler = (newindex) => {
+    let newData = [...data];
+    newData.splice(newindex, 0, Array(data[0].length).fill(""));
+    setData(newData);
+    console.log(data);
+  };
+
   const CriaButtonAddColumn = ({ index }) => (
-    <TableCell align="left" colSpan={1}>
-      <Button
-        onClick={() => {
-          console.log(index);
-          clickHandler(index);
-        }}
-      >
-        +
-      </Button>
-    </TableCell>
+    <PlusCell align="right" colSpan={1}>
+      {index == 0 ? undefined : (
+        <PlusButton onClick={() => addColumnhandler(index)} style={{}}>
+          +
+        </PlusButton>
+      )}
+    </PlusCell>
+  );
+
+  const CriaButtonAddRow = ({ index }) => (
+    <PlusCell align="right" colSpan={1}>
+      <PlusButton onClick={() => addRowhandler(index + 1)} style={{}}>
+        <ExpandMoreIcon></ExpandMoreIcon>
+      </PlusButton>
+    </PlusCell>
   );
 
   return (
-    <Container>
+    <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
@@ -75,33 +113,33 @@ const TabelaDados = () => {
         <TableBody>
           {data.map((row, index) => (
             <TableRow key={index}>
-              <TableCell
-                align="left"
-                key={`lastheader`}
-                colSpan={1}
-              ></TableCell>
+              {/* <SingleColumnCell align="left" colSpan={1}></SingleColumnCell> */}
+              <CriaButtonAddRow index={index}></CriaButtonAddRow>
               {row.map((item, index2) => (
-                <Fragment>
+                <Fragment key={`${index}-${index2}`}>
                   <TableCell
                     align="left"
                     colSpan={3}
-                    key={`${index}-${index2}`}
+                    key={`cell${index}-${index2}`}
                   >
                     <TextField
+                      key={`input${index}-${index2}`}
                       value={item}
+                      size="small"
+                      style={{ width: "100%" }}
                       onChange={(e) =>
                         changeHandler(e.target.value, index, index2)
                       }
                     />
                   </TableCell>
-                  <TableCell align="left" colSpan={1}></TableCell>
+                  <SingleColumnCell align="left" colSpan={1}></SingleColumnCell>
                 </Fragment>
               ))}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </Container>
+    </TableContainer>
   );
 };
 
