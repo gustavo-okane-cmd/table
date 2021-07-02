@@ -126,7 +126,7 @@ const TabelaDados = () => {
                       key={`input${index}-${index2}`}
                       value={item}
                       size="small"
-                      style={{ width: "100%" }}
+                      style={{ width: "120px" }}
                       onChange={(e) =>
                         changeHandler(e.target.value, index, index2)
                       }
