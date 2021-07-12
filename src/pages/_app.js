@@ -6,7 +6,7 @@ import { ThemeProvider } from "styled-components";
 import CssBaseline from "@material-ui/core/CssBaseline";
 // import { StyledEngineProvider } from "@material-ui/core/styles";
 import { StylesProvider } from "@material-ui/core/styles";
-// import { wrapper } from "../store/store";
+import { wrapper } from "../store/store";
 import theme from "../theme";
 
 class MyApp extends App {
@@ -42,4 +42,4 @@ class MyApp extends App {
     }
 }
 
-export default MyApp;
+export default wrapper.withRedux(MyApp);

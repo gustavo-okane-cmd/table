@@ -23,7 +23,7 @@ export const DelButton = styled(Button)`
   min-width: 16px;
 `;
 
-export const DelButtonRow = styled(DelButton)`
+export const DelRowButton = styled(DelButton)`
   margin: 25px 3px 3px 0;
 `;
 
