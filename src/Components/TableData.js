@@ -5,10 +5,11 @@ import {
   addDelColumn,
   addDelRow,
   setCellValue,
-  selectDados,
-  selectRowOrder,
-  selectColumns,
-  selectRows,
+  selectDates,
+  selectAtivos,
+  selectDatesOrder,
+  selectAtivosOrder,
+  selectData,
 } from "../store/reducers/tabelaSlice";
 
 import TextField from "@material-ui/core/TextField";
@@ -31,51 +32,106 @@ import {
   SingleColumnCell,
   DataCell,
 } from "./TableDataStyles";
+import { FreeBreakfast } from "@material-ui/icons";
 
 const TabelaDados = () => {
-  const data = useSelector(selectDados);
-  const rowOrder = useSelector(selectRowOrder);
-  const columns = useSelector(selectColumns);
+  const data = useSelector(selectData);
+  const dates = useSelector(selectDates);
+  const ativos = useSelector(selectAtivos);
+  const datesOrder = useSelector(selectDatesOrder);
+  const ativosOrder = useSelector(selectAtivosOrder);
   const dispatch = useDispatch();
 
-  const CriaRow = (props) => {
-    const cells = data[props.att.rowId].array.map((item, index2) => (
-      <Fragment key={`${props.att.index}-${index2}`}>
-        <EditableCell att={{ rowId: props.att.rowId, index2, item }} />
-        <SingleColumnCell align="center" colSpan={1}></SingleColumnCell>
-      </Fragment>
-    ));
-    return (
-      <TableRow key={props.att.index}>
-        <CriaButtonAddDelRow index={props.att.index}></CriaButtonAddDelRow>
-        {cells}
-      </TableRow>
-    );
-  };
-
-  const EditableCell = (props) => {
-    let [instantValue, setInstantValue] = useState(props.att.item);
+  const AutoCompleteCell = (props) => {
+    let [instantValue, setInstantValue] = useState(ativos[props.att.ativoId]);
     return (
       <DataCell
         align="left"
         colSpan={1}
-        key={`cell-${props.att.rowId}-${props.att.index2}`}
+        key={`cellativo-${props.att.ativoId}`}
         style={{ margin: "2px" }}
       >
         <TextField
-          key={`input${props.att.rowId}-${props.att.index2}`}
+          key={`inputativo${props.att.ativoId}`}
           value={instantValue}
           size="small"
           style={{ width: "120px" }}
+          onChange={(e) => setInstantValue(e.target.value)}
           // onBlur={(e) =>
-          //   onChange={(e) => changeHandler(e.target.value, index, index2)}
+          // dispatch(
+          //   setCellValue({
+          //     value: e.target.value,
+          //     r: props.att.rowId,
+          //     c: props.att.index2,
+          //   })
+          // )
+          // }
+        />
+      </DataCell>
+    );
+  };
+
+  const DateCell = (props) => {
+    let [instantValue, setInstantValue] = useState(dates[props.att.dateId]);
+    return (
+      <DataCell
+        align="left"
+        colSpan={1}
+        key={`celldate-${props.att.dateId}`}
+        style={{ margin: "2px" }}
+      >
+        <TextField
+          key={`inputdate${props.att.dateId}`}
+          value={instantValue}
+          size="small"
+          style={{ width: "120px" }}
+          onChange={(e) => setInstantValue(e.target.value)}
+          // onBlur={(e) =>
+          // dispatch(
+          //   setCellValue({
+          //     value: e.target.value,
+          //     r: props.att.rowId,
+          //     c: props.att.index2,
+          //   })
+          // )
+          // }
+        />
+      </DataCell>
+    );
+  };
+
+  const EditableCell = (props) => {
+    let [instantValue, setInstantValue] = useState(
+      data[props.att.ativoId][props.att.dateId]
+    );
+    return (
+      <DataCell
+        align="left"
+        colSpan={1}
+        key={`cell-${props.att.ativoId}-${props.att.dateId}`}
+        style={{ margin: "2px" }}
+      >
+        <TextField
+          key={`input${props.att.ativoId}-${props.att.dateId}`}
+          value={instantValue}
+          size="small"
+          style={{ width: "120px" }}
+          // onChange={(e) =>
+          //   dispatch(
+          //     setCellValue({
+          //       value: e.target.value,
+          //       ativoId: props.att.ativoId,
+          //       dateId: props.att.dateId,
+          //     })
+          //   )
+          // }
           onChange={(e) => setInstantValue(e.target.value)}
           onBlur={(e) =>
             dispatch(
               setCellValue({
                 value: e.target.value,
-                r: props.att.rowId,
-                c: props.att.index2,
+                ativoId: props.att.ativoId,
+                dateId: props.att.dateId,
               })
             )
           }
@@ -84,90 +140,94 @@ const TabelaDados = () => {
     );
   };
 
-  const CriaButtonAddColumn = ({ index }) => (
-    <PlusCell align="right" colSpan={1}>
-      {index == 0 ? undefined : (
-        <PlusButton
-          //   onClick={() => addDelColumnhandler(index, "add")}
-          onClick={() => dispatch(addDelColumn({ index, add_del: "add" }))}
-          style={{}}
-        >
-          +
-        </PlusButton>
-      )}
-    </PlusCell>
-  );
-
   const CriaButtonAddDelRow = ({ index }) => (
     <PlusCell align="right" colSpan={1}>
-      {/* linha 0 de ativos, nÃ£o criar botÃ£o de adicionar coluna nem deletar */}
-      {index == 0 ? undefined : (
-        <DelRowButton
-          onClick={() => dispatch(addDelRow({ index, add_del: "del" }))}
-        >
-          <DeleteForeverIcon></DeleteForeverIcon>
-        </DelRowButton>
-      )}
-      {/* <PlusButton onClick={() => addDelRowhandler(index + 1, 'add')}> */}
+      <DelRowButton
+        onClick={() => dispatch(addDelRow({ i: index, add_del: "del" }))}
+      >
+        <DeleteForeverIcon></DeleteForeverIcon>
+      </DelRowButton>
       <PlusButton
-        onClick={() =>
-          dispatch(addDelRow({ index: index + 1, add_del: "add" }))
-        }
+        onClick={() => dispatch(addDelRow({ i: index + 1, add_del: "add" }))}
       >
         <ExpandMoreIcon></ExpandMoreIcon>
       </PlusButton>
     </PlusCell>
   );
 
-  //   const headRow = data[0].map((row, index) => (
-  //     <Fragment key={`${index}header`}>
-  //       <CriaButtonAddColumn index={index}></CriaButtonAddColumn>
-  //       <TableCell align="left" colSpan={1}>
-  //         {/* coluna 0 de datas, nÃ£o criar botÃ£o de adicionar coluna nem deletar */}
-  //         {index == 0 ? undefined : (
-  //           <DelButton
-  //             onClick={() => dispatch(addDelColumn({ index, add_del: "del" }))}
-  //           >
-  //             <DeleteForeverIcon></DeleteForeverIcon>
-  //           </DelButton>
-  //         )}
-  //       </TableCell>
-  //     </Fragment>
-  //   ));
   const headRow = [];
-  for (let i = 0; i < columns; i++) {
+  headRow.push(<PlusCell align="right" colSpan={1}></PlusCell>);
+  for (let i = 0; i <= dates.length; i++) {
     headRow.push(
       <Fragment key={`${i}header`}>
-        <CriaButtonAddColumn index={i}></CriaButtonAddColumn>
         <TableCell align="left" colSpan={1}>
-          {/* coluna 0 de datas, nÃ£o criar botÃ£o de adicionar coluna nem deletar */}
+          {/* coluna 0 de datas, naum criar botaum de deletar */}
           {i == 0 ? undefined : (
             <DelButton
-              onClick={() => dispatch(addDelColumn({ i, add_del: "del" }))}
+              onClick={() =>
+                dispatch(addDelColumn({ i: i - 1, add_del: "del" }))
+              }
             >
               <DeleteForeverIcon></DeleteForeverIcon>
             </DelButton>
           )}
         </TableCell>
+        <PlusCell align="right" colSpan={1}>
+          <PlusButton
+            onClick={() => dispatch(addDelColumn({ i, add_del: "add" }))}
+          >
+            +
+          </PlusButton>
+        </PlusCell>
       </Fragment>
     );
   }
 
-  const tableData = rowOrder.map((rowId, index) => (
-    <CriaRow att={{ rowId, index }} key={`tablerow${index}`} />
+  const firstRow = (
+    <TableRow>
+      <PlusCell align="right" colSpan={1}>
+        <PlusButton
+          onClick={() => dispatch(addDelRow({ i: 0, add_del: "add" }))}
+        >
+          <ExpandMoreIcon></ExpandMoreIcon>
+        </PlusButton>
+      </PlusCell>
+      <TextField disabled={true} />
+      <SingleColumnCell align="center" colSpan={1}></SingleColumnCell>
+      {datesOrder.map((dateId) => (
+        <Fragment key={`frag${dateId}`}>
+          <DateCell att={{ dateId }} />
+          <SingleColumnCell align="center" colSpan={1}></SingleColumnCell>
+        </Fragment>
+      ))}
+    </TableRow>
+  );
+
+  const tableData = ativosOrder.map((ativoId, index) => (
+    <TableRow key={`tablerow${index}`}>
+      <CriaButtonAddDelRow index={index}></CriaButtonAddDelRow>
+      <AutoCompleteCell att={{ ativoId }} />
+      <SingleColumnCell align="center" colSpan={1}></SingleColumnCell>
+      {datesOrder.map((dateId) => (
+        <Fragment key={`frag${dateId}-${ativoId}`}>
+          <EditableCell att={{ ativoId, dateId }} />
+          <SingleColumnCell align="center" colSpan={1}></SingleColumnCell>
+        </Fragment>
+      ))}
+    </TableRow>
   ));
 
   return (
     <TableContainer>
       <Table>
         <TableHead>
-          <TableRow>
-            {headRow}
-            <CriaButtonAddColumn index={columns}></CriaButtonAddColumn>
-          </TableRow>
+          <TableRow>{headRow}</TableRow>
         </TableHead>
 
-        <TableBody>{tableData}</TableBody>
+        <TableBody>
+          {firstRow}
+          {tableData}
+        </TableBody>
       </Table>
     </TableContainer>
   );
