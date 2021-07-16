@@ -86,11 +86,9 @@ const DateCell = (props) => {
         disableToolbar
         variant="inline"
         format="dd/MM/yyyy"
-        margin="normal"
-        // id="date-picker-inline"
+        style={{ width: "150px" }}
         id={`inputdate${props.att.dateId}`}
         value={dates[props.att.dateId]}
-        // onChange={(e) =>
         onChange={(date) => {
           console.log(date);
           dispatch(
@@ -125,9 +123,8 @@ const EditableCell = (props) => {
         key={`input${props.att.ativoId}-${props.att.dateId}`}
         id={`${props.att.ativoId}-${props.att.dateId}`}
         value={instantValue}
-        // value={data[props.att.ativoId][props.att.dateId]}
         size="small"
-        style={{ width: "120px" }}
+        style={{ width: "150px" }}
         onChange={(e) => setInstantValue(e.target.value)}
         onBlur={(e) =>
           dispatch(
@@ -138,15 +135,6 @@ const EditableCell = (props) => {
             })
           )
         }
-        // onChange={(e) =>
-        //   dispatch(
-        //     setCellValue({
-        //       value: e.target.value,
-        //       ativoId: props.att.ativoId,
-        //       dateId: props.att.dateId,
-        //     })
-        //   )
-        // }
       />
     </DataCell>
   );
