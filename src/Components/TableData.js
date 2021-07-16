@@ -5,6 +5,8 @@ import {
   addDelColumn,
   addDelRow,
   setCellValue,
+  setAtivoValue,
+  setDateValue,
   selectDates,
   selectAtivos,
   selectDatesOrder,
@@ -23,6 +25,13 @@ import {
   TableRow,
 } from "@material-ui/core";
 
+import "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+
 import {
   TableContainer,
   DelButton,
@@ -32,115 +41,135 @@ import {
   SingleColumnCell,
   DataCell,
 } from "./TableDataStyles";
-import { FreeBreakfast } from "@material-ui/icons";
 
-const TabelaDados = () => {
-  const data = useSelector(selectData);
-  const dates = useSelector(selectDates);
+const AutoCompleteCell = (props) => {
   const ativos = useSelector(selectAtivos);
-  const datesOrder = useSelector(selectDatesOrder);
-  const ativosOrder = useSelector(selectAtivosOrder);
+  let [instantValue, setInstantValue] = useState(ativos[props.att.ativoId]);
+  return (
+    <DataCell
+      align="left"
+      colSpan={1}
+      key={`cellativo-${props.att.ativoId}`}
+      style={{ margin: "2px" }}
+    >
+      <TextField
+        key={`inputativo${props.att.ativoId}`}
+        value={instantValue}
+        size="small"
+        style={{ width: "120px" }}
+        onChange={(e) => setInstantValue(e.target.value)}
+        onBlur={(e) =>
+          dispatch(
+            setAtivoValue({
+              value: e.target.value,
+              ativoId: props.att.ativoId,
+            })
+          )
+        }
+      />
+    </DataCell>
+  );
+};
+
+const DateCell = (props) => {
+  const dates = useSelector(selectDates);
   const dispatch = useDispatch();
+  // let [instantValue, setInstantValue] = useState(dates[props.att.dateId]);
+  return (
+    <DataCell
+      align="left"
+      colSpan={1}
+      key={`celldate-${props.att.dateId}`}
+      style={{ margin: "2px" }}
+    >
+      {/* <TextField
+        key={`inputdate${props.att.dateId}`}
+        value={instantValue}
+        size="small"
+        style={{ width: "120px" }}
+        onChange={(e) =>
+          dispatch(
+            setAtivoValue({
+              value: e.target.value,
+              ativoId: props.att.ativoId,
+            })
+          )
+        }
+      /> */}
+      <KeyboardDatePicker
+        disableToolbar
+        variant="inline"
+        format="dd/MM/yyyy"
+        margin="normal"
+        // id="date-picker-inline"
+        id={`inputdate${props.att.dateId}`}
+        value={dates[props.att.dateId]}
+        // onChange={(e) =>
+        onChange={(date) => {
+          console.log(date);
+          dispatch(
+            setDateValue({
+              // value: e.target.value,
+              value: date,
+              dateId: props.att.dateId,
+            })
+          );
+        }}
+        KeyboardButtonProps={{
+          "aria-label": "change date",
+        }}
+      />
+    </DataCell>
+  );
+};
 
-  const AutoCompleteCell = (props) => {
-    let [instantValue, setInstantValue] = useState(ativos[props.att.ativoId]);
-    return (
-      <DataCell
-        align="left"
-        colSpan={1}
-        key={`cellativo-${props.att.ativoId}`}
-        style={{ margin: "2px" }}
-      >
-        <TextField
-          key={`inputativo${props.att.ativoId}`}
-          value={instantValue}
-          size="small"
-          style={{ width: "120px" }}
-          onChange={(e) => setInstantValue(e.target.value)}
-          // onBlur={(e) =>
-          // dispatch(
-          //   setCellValue({
-          //     value: e.target.value,
-          //     r: props.att.rowId,
-          //     c: props.att.index2,
-          //   })
-          // )
-          // }
-        />
-      </DataCell>
-    );
-  };
+const EditableCell = (props) => {
+  const data = useSelector(selectData);
+  const dispatch = useDispatch();
+  let [instantValue, setInstantValue] = useState(
+    data[props.att.ativoId][props.att.dateId]
+  );
+  return (
+    <DataCell
+      align="left"
+      colSpan={1}
+      key={`cell-${props.att.ativoId}-${props.att.dateId}`}
+      style={{ margin: "2px" }}
+    >
+      <TextField
+        key={`input${props.att.ativoId}-${props.att.dateId}`}
+        id={`${props.att.ativoId}-${props.att.dateId}`}
+        value={instantValue}
+        // value={data[props.att.ativoId][props.att.dateId]}
+        size="small"
+        style={{ width: "120px" }}
+        onChange={(e) => setInstantValue(e.target.value)}
+        onBlur={(e) =>
+          dispatch(
+            setCellValue({
+              value: e.target.value,
+              ativoId: props.att.ativoId,
+              dateId: props.att.dateId,
+            })
+          )
+        }
+        // onChange={(e) =>
+        //   dispatch(
+        //     setCellValue({
+        //       value: e.target.value,
+        //       ativoId: props.att.ativoId,
+        //       dateId: props.att.dateId,
+        //     })
+        //   )
+        // }
+      />
+    </DataCell>
+  );
+};
 
-  const DateCell = (props) => {
-    let [instantValue, setInstantValue] = useState(dates[props.att.dateId]);
-    return (
-      <DataCell
-        align="left"
-        colSpan={1}
-        key={`celldate-${props.att.dateId}`}
-        style={{ margin: "2px" }}
-      >
-        <TextField
-          key={`inputdate${props.att.dateId}`}
-          value={instantValue}
-          size="small"
-          style={{ width: "120px" }}
-          onChange={(e) => setInstantValue(e.target.value)}
-          // onBlur={(e) =>
-          // dispatch(
-          //   setCellValue({
-          //     value: e.target.value,
-          //     r: props.att.rowId,
-          //     c: props.att.index2,
-          //   })
-          // )
-          // }
-        />
-      </DataCell>
-    );
-  };
-
-  const EditableCell = (props) => {
-    let [instantValue, setInstantValue] = useState(
-      data[props.att.ativoId][props.att.dateId]
-    );
-    return (
-      <DataCell
-        align="left"
-        colSpan={1}
-        key={`cell-${props.att.ativoId}-${props.att.dateId}`}
-        style={{ margin: "2px" }}
-      >
-        <TextField
-          key={`input${props.att.ativoId}-${props.att.dateId}`}
-          value={instantValue}
-          size="small"
-          style={{ width: "120px" }}
-          // onChange={(e) =>
-          //   dispatch(
-          //     setCellValue({
-          //       value: e.target.value,
-          //       ativoId: props.att.ativoId,
-          //       dateId: props.att.dateId,
-          //     })
-          //   )
-          // }
-          onChange={(e) => setInstantValue(e.target.value)}
-          onBlur={(e) =>
-            dispatch(
-              setCellValue({
-                value: e.target.value,
-                ativoId: props.att.ativoId,
-                dateId: props.att.dateId,
-              })
-            )
-          }
-        />
-      </DataCell>
-    );
-  };
-
-  const CriaButtonAddDelRow = ({ index }) => (
+const CriaButtonAddDelRow = ({ index }) => {
+  const dispatch = useDispatch();
+  return (
     <PlusCell align="right" colSpan={1}>
       <DelRowButton
         onClick={() => dispatch(addDelRow({ i: index, add_del: "del" }))}
@@ -154,19 +183,26 @@ const TabelaDados = () => {
       </PlusButton>
     </PlusCell>
   );
+};
 
-  const headRow = [];
-  headRow.push(<PlusCell align="right" colSpan={1}></PlusCell>);
-  for (let i = 0; i <= dates.length; i++) {
-    headRow.push(
+const TabelaDados = () => {
+  // const data = useSelector(selectData);
+  // const dates = useSelector(selectDates);
+  // const ativos = useSelector(selectAtivos);
+  const datesOrder = useSelector(selectDatesOrder);
+  const ativosOrder = useSelector(selectAtivosOrder);
+  const dispatch = useDispatch();
+
+  const headerRow = [];
+  headerRow.push(<PlusCell align="right" colSpan={1}></PlusCell>);
+  for (let i = -1; i < datesOrder.length; i++) {
+    headerRow.push(
       <Fragment key={`${i}header`}>
         <TableCell align="left" colSpan={1}>
           {/* coluna 0 de datas, naum criar botaum de deletar */}
-          {i == 0 ? undefined : (
+          {i == -1 ? undefined : (
             <DelButton
-              onClick={() =>
-                dispatch(addDelColumn({ i: i - 1, add_del: "del" }))
-              }
+              onClick={() => dispatch(addDelColumn({ i: i, add_del: "del" }))}
             >
               <DeleteForeverIcon></DeleteForeverIcon>
             </DelButton>
@@ -174,7 +210,7 @@ const TabelaDados = () => {
         </TableCell>
         <PlusCell align="right" colSpan={1}>
           <PlusButton
-            onClick={() => dispatch(addDelColumn({ i, add_del: "add" }))}
+            onClick={() => dispatch(addDelColumn({ i: i + 1, add_del: "add" }))}
           >
             +
           </PlusButton>
@@ -192,7 +228,8 @@ const TabelaDados = () => {
           <ExpandMoreIcon></ExpandMoreIcon>
         </PlusButton>
       </PlusCell>
-      <TextField disabled={true} />
+      {/* <TextField disabled={true} /> */}
+      <TableCell align="left" colSpan={1} />
       <SingleColumnCell align="center" colSpan={1}></SingleColumnCell>
       {datesOrder.map((dateId) => (
         <Fragment key={`frag${dateId}`}>
@@ -206,7 +243,7 @@ const TabelaDados = () => {
   const tableData = ativosOrder.map((ativoId, index) => (
     <TableRow key={`tablerow${index}`}>
       <CriaButtonAddDelRow index={index}></CriaButtonAddDelRow>
-      <AutoCompleteCell att={{ ativoId }} />
+      <AutoCompleteCell key={`ativo${ativoId}`} att={{ ativoId }} />
       <SingleColumnCell align="center" colSpan={1}></SingleColumnCell>
       {datesOrder.map((dateId) => (
         <Fragment key={`frag${dateId}-${ativoId}`}>
@@ -219,18 +256,20 @@ const TabelaDados = () => {
 
   return (
     <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>{headRow}</TableRow>
-        </TableHead>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <Table>
+          <TableHead>
+            <TableRow>{headerRow}</TableRow>
+          </TableHead>
 
-        <TableBody>
-          {firstRow}
-          {tableData}
-        </TableBody>
-      </Table>
+          <TableBody>
+            {firstRow}
+            {tableData}
+          </TableBody>
+        </Table>
+      </MuiPickersUtilsProvider>
     </TableContainer>
   );
 };
 
-export default React.memo(TabelaDados);
+export default TabelaDados;
