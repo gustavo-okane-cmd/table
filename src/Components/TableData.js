@@ -82,20 +82,6 @@ const DateCell = (props) => {
       key={`celldate-${props.att.dateId}`}
       style={{ margin: "2px" }}
     >
-      {/* <TextField
-        key={`inputdate${props.att.dateId}`}
-        value={instantValue}
-        size="small"
-        style={{ width: "120px" }}
-        onChange={(e) =>
-          dispatch(
-            setAtivoValue({
-              value: e.target.value,
-              ativoId: props.att.ativoId,
-            })
-          )
-        }
-      /> */}
       <KeyboardDatePicker
         disableToolbar
         variant="inline"
@@ -109,7 +95,6 @@ const DateCell = (props) => {
           console.log(date);
           dispatch(
             setDateValue({
-              // value: e.target.value,
               value: date,
               dateId: props.att.dateId,
             })
@@ -194,7 +179,7 @@ const TabelaDados = () => {
   const dispatch = useDispatch();
 
   const headerRow = [];
-  headerRow.push(<PlusCell align="right" colSpan={1}></PlusCell>);
+  headerRow.push(<PlusCell key={`header-2`} align="right" colSpan={1}></PlusCell>);
   for (let i = -1; i < datesOrder.length; i++) {
     headerRow.push(
       <Fragment key={`${i}header`}>
