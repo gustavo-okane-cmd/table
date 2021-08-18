@@ -1,40 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, unwrapResult } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
-const initialData = [
-  ["", "04/02/1998", "04/02/2010", "04/02/2021"],
-  ["PETR4", "100", "50", "50"],
-  ["VALE3", "0", "50", "25"],
-  ["ITUB4", "0", "0", "25"],
-];
-
-// const initialState = {
-//   dados: {
-//     1: {
-//       array: ["", "04/02/1998", "04/02/2010", "04/02/2016", "04/02/2021"],
-//     },
-//     2: {
-//       array: ["PETR4", "100", "50", "50", "50"],
-//     },
-//     3: {
-//       array: ["VALE3", "0", "50", "25", "30"],
-//     },
-//     4: {
-//       array: ["ITUB4", "0", "0", "25", "20"],
-//     },
-//   },
-//   rowOrder: [1, 2, 3, 4],
-//   last_id: 4,
-//   columns: 5,
-//   rows: 4,
-// };
+export const fetchAutocomplete = createAsyncThunk(
+  "fetchAutocomplete",
+  async (searchTerm, { getState, requestId }) => {
+      const response = await axios.get(
+          `https://www.env2.node2.comdinheiro.com.br/Clientes/INTER_COMPARADOR/autocomplete.php?term=${searchTerm}&ativos=`
+      );
+      return response.data;
+  }
+);
 
 const initialState = {
   dates: {
-    // 1: "04/02/1998",
-    // 2: "04/02/2010",
-    // 3: "04/02/2016",
-    // 4: "04/02/2021",
     1: new Date('1998-02-04T21:00:00'),
     2: new Date('2010-02-04T21:00:00'),
     3: new Date('2016-02-04T21:00:00'),
@@ -68,40 +46,6 @@ const initialState = {
       4: "20",
     },
   },
-  // data: {
-  //   1: "100",
-  //   2: "50",
-  //   3: "50",
-  //   4: "50",
-  //   5: "0",
-  //   6: "50",
-  //   7: "25",
-  //   8: "30",
-  //   8: "0",
-  //   10: "0",
-  //   11: "25",
-  //   12: "20",
-  // },
-  // dataByAtivoByDate: {
-  //   1: {
-  //     1: 1,
-  //     2: 2,
-  //     3: 3,
-  //     4: 4,
-  //   },
-  //   2: {
-  //     1: 5,
-  //     2: 6,
-  //     3: 7,
-  //     4: 8,
-  //   },
-  //   3: {
-  //     1: 9,
-  //     2: 10,
-  //     3: 11,
-  //     4: 12,
-  //   },
-  // },
   lastId: 12,
   lastDateId: 4,
   lastAtivoId: 3,

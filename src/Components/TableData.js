@@ -45,6 +45,7 @@ import {
 const AutoCompleteCell = (props) => {
   const ativos = useSelector(selectAtivos);
   let [instantValue, setInstantValue] = useState(ativos[props.att.ativoId]);
+  const dispatch = useDispatch();
   return (
     <DataCell
       align="left"
@@ -57,6 +58,7 @@ const AutoCompleteCell = (props) => {
         value={instantValue}
         size="small"
         style={{ width: "120px" }}
+        autoComplete="off"
         onChange={(e) => setInstantValue(e.target.value)}
         onBlur={(e) =>
           dispatch(
