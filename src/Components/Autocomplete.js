@@ -48,28 +48,17 @@ const AutocompleteField = (props) => {
   const loadingAutocomplete = useSelector(selectLoadingAutocomplete);
   const [open, setOpen] = useState(false);
   const options = useSelector(selectOptions);
-  let typingTimeout = 0,
-    selectTimeout = 0;
+  const [typingTimeout, setTypingTimeout] = useState(0);
+  const [selectTimeout, setSelectTimeout] = useState(0);
 
   const ativos = useSelector(selectAtivos);
   let [instantValue, setInstantValue] = useState(ativos[id]);
   const initialValue = { ticker: ativos[id], label: ativos[id] };
   let [value, setValue] = useState(initialValue);
 
-  // console.log(ativos);
-  // console.log(id);
-  // console.log(ativos[id]);
-  // console.log(instantValue);
-  // const dispatch = useDispatch();
-
-  // React.useEffect(() => {
-  //     dispatch(addCase(id));
-  // }, [id]);
-
   React.useEffect(() => {
     if (!open) {
-      // dispatch(setOptions({id, value: []}));
-      console.log(options);
+      // console.log(options);
       dispatch(setOptions([]));
     }
   }, [open]);
@@ -81,26 +70,27 @@ const AutocompleteField = (props) => {
       value={value}
       onChange={(_, newValue) => {
         // console.log("value", newValue);
-        selectTimeout = setTimeout(() => {
-          console.log("Selected an autocomplete option.");
-        }, 100);
+        setSelectTimeout(
+          setTimeout(() => {
+            // console.log("Selected an autocomplete option.");
+          }, 100)
+        );
 
         setValue(newValue);
       }}
       inputValue={instantValue}
       onInputChange={(event, newInputValue) => {
-        console.log("value", newInputValue);
         setInstantValue(newInputValue);
 
         console.log(typingTimeout);
         if (typingTimeout) {
           clearTimeout(typingTimeout);
-          console.log("cleared timeout");
         }
-        typingTimeout = setTimeout(() => {
-          if (!selectTimeout) dispatch(fetchAutocomplete(newInputValue));
-        }, 300);
-        console.log(typingTimeout);
+        setTypingTimeout(
+          setTimeout(() => {
+            if (!selectTimeout) dispatch(fetchAutocomplete(newInputValue));
+          }, 300)
+        );
       }}
       getOptionSelected={(option, value) => option.id === value.id}
       getOptionLabel={(option) => option.ticker}
@@ -111,7 +101,7 @@ const AutocompleteField = (props) => {
         </div>
       )}
       // autoSelect
-      freeSolo="true"
+      freeSolo={true}
       filterOptions={(x) => x}
       onOpen={() => {
         setOpen(true);
