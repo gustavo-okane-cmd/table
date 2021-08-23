@@ -13,10 +13,10 @@ export const fetchAutocomplete = createAsyncThunk(
 
 const initialState = {
   dates: {
-    1: new Date('1998-02-04T21:00:00'),
-    2: new Date('2010-02-04T21:00:00'),
-    3: new Date('2016-02-04T21:00:00'),
-    4: new Date('2021-02-04T21:00:00'),
+    1: new Date('1998-02-04T21:00:00').toDateString(),
+    2: new Date('2010-02-04T21:00:00').toDateString(),
+    3: new Date('2016-02-04T21:00:00').toDateString(),
+    4: new Date('2021-02-04T21:00:00').toDateString(),
   },
   ativos: {
     1: "PETR4",

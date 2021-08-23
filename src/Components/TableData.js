@@ -42,6 +42,8 @@ import {
   DataCell,
 } from "./TableDataStyles";
 
+import AutocompleteField from "./Autocomplete";
+
 const AutoCompleteCell = (props) => {
   const ativos = useSelector(selectAtivos);
   let [instantValue, setInstantValue] = useState(ativos[props.att.ativoId]);
@@ -53,7 +55,7 @@ const AutoCompleteCell = (props) => {
       key={`cellativo-${props.att.ativoId}`}
       style={{ margin: "2px" }}
     >
-      <TextField
+      {/* <TextField
         key={`inputativo${props.att.ativoId}`}
         value={instantValue}
         size="small"
@@ -68,7 +70,8 @@ const AutoCompleteCell = (props) => {
             })
           )
         }
-      />
+      /> */}
+      <AutocompleteField key={props.att.ativoId} id={props.att.ativoId} />
     </DataCell>
   );
 };
@@ -95,7 +98,7 @@ const DateCell = (props) => {
           console.log(date);
           dispatch(
             setDateValue({
-              value: date,
+              value: date.toDateString(),
               dateId: props.att.dateId,
             })
           );
@@ -169,7 +172,9 @@ const TabelaDados = () => {
   const dispatch = useDispatch();
 
   const headerRow = [];
-  headerRow.push(<PlusCell key={`header-2`} align="right" colSpan={1}></PlusCell>);
+  headerRow.push(
+    <PlusCell key={`header-2`} align="right" colSpan={1}></PlusCell>
+  );
   for (let i = -1; i < datesOrder.length; i++) {
     headerRow.push(
       <Fragment key={`${i}header`}>
