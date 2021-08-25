@@ -7,18 +7,7 @@ import {
   fetchAutocomplete,
 } from "../store/reducers/autocompleteSlice";
 
-import {
-  addDelColumn,
-  addDelRow,
-  setCellValue,
-  setAtivoValue,
-  setDateValue,
-  selectDates,
-  selectAtivos,
-  selectDatesOrder,
-  selectAtivosOrder,
-  selectData,
-} from "../store/reducers/tabelaSlice";
+import { setAtivoValue, selectAtivos } from "../store/reducers/tabelaSlice";
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -49,19 +38,12 @@ const AutocompleteField = (props) => {
   const [open, setOpen] = useState(false);
   const options = useSelector(selectOptions);
   const [typingTimeout, setTypingTimeout] = useState(0);
-  const [selectTimeout, setSelectTimeout] = useState(0);
 
   const ativos = useSelector(selectAtivos);
   let [instantValue, setInstantValue] = useState(ativos[id]);
   const initialValue = { ticker: ativos[id], label: ativos[id] };
   let [value, setValue] = useState(initialValue);
 
-  React.useEffect(() => {
-    if (!open) {
-      // console.log(options);
-      dispatch(setOptions([]));
-    }
-  }, [open]);
 
   return (
     <StyledAutocomplete
@@ -69,26 +51,18 @@ const AutocompleteField = (props) => {
       open={open}
       value={value}
       onChange={(_, newValue) => {
-        // console.log("value", newValue);
-        setSelectTimeout(
-          setTimeout(() => {
-            // console.log("Selected an autocomplete option.");
-          }, 100)
-        );
-
         setValue(newValue);
       }}
       inputValue={instantValue}
       onInputChange={(event, newInputValue) => {
         setInstantValue(newInputValue);
 
-        console.log(typingTimeout);
         if (typingTimeout) {
           clearTimeout(typingTimeout);
         }
         setTypingTimeout(
           setTimeout(() => {
-            if (!selectTimeout) dispatch(fetchAutocomplete(newInputValue));
+            if (open) dispatch(fetchAutocomplete(newInputValue));
           }, 300)
         );
       }}
@@ -109,14 +83,15 @@ const AutocompleteField = (props) => {
       onClose={() => {
         setOpen(false);
       }}
-      onBlur={(e) =>
+      onBlur={(e) => {
+        dispatch(setOptions([]));
         dispatch(
           setAtivoValue({
             value: e.target.value,
             ativoId: id,
           })
-        )
-      }
+        );
+      }}
       options={options}
       loading={loadingAutocomplete[id]}
       renderInput={(params) => (

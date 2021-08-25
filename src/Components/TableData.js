@@ -25,12 +25,15 @@ import {
   TableRow,
 } from "@material-ui/core";
 
-import "date-fns";
-import DateFnsUtils from "@date-io/date-fns";
+// import "date-fns";
+// import DateFnsUtils from "@date-io/date-fns";
+
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
+// pick a date util library
+import MomentUtils from "@date-io/moment";
 
 import {
   TableContainer,
@@ -79,7 +82,9 @@ const AutoCompleteCell = (props) => {
 const DateCell = (props) => {
   const dates = useSelector(selectDates);
   const dispatch = useDispatch();
-  // let [instantValue, setInstantValue] = useState(dates[props.att.dateId]);
+  let [instantDate, setInstantDate] = useState(
+    new Date(dates[props.att.dateId])
+  );
   return (
     <DataCell
       align="left"
@@ -88,23 +93,23 @@ const DateCell = (props) => {
       style={{ margin: "2px" }}
     >
       <KeyboardDatePicker
-        disableToolbar
-        variant="inline"
-        format="dd/MM/yyyy"
         style={{ width: "150px" }}
+        variant="inline"
+        format="DD/MM/yyyy"
+        value={instantDate}
         id={`inputdate${props.att.dateId}`}
-        value={dates[props.att.dateId]}
-        onChange={(date) => {
-          console.log(date);
-          dispatch(
-            setDateValue({
-              value: date.toDateString(),
-              dateId: props.att.dateId,
-            })
-          );
+        onChange={(date) => setInstantDate(date)}
+        onBlur={() => {
+          setDateValue({
+            value: instantDate,
+            dateId: props.att.dateId,
+          });
         }}
-        KeyboardButtonProps={{
-          "aria-label": "change date",
+        onClose={() => {
+          setDateValue({
+            value: instantDate,
+            dateId: props.att.dateId,
+          });
         }}
       />
     </DataCell>
@@ -236,7 +241,7 @@ const TabelaDados = () => {
 
   return (
     <TableContainer>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
         <Table>
           <TableHead>
             <TableRow>{headerRow}</TableRow>
