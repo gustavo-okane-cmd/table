@@ -28,7 +28,8 @@ const ListDescription = styled.h3`
 `;
 
 const StyledAutocomplete = styled(Autocomplete)`
-  width: 300px;
+  width: 210px;
+  padding: 0px;
 `;
 
 const AutocompleteField = (props) => {
@@ -92,6 +93,7 @@ const AutocompleteField = (props) => {
           })
         );
       }}
+      size="small"
       options={options}
       loading={loadingAutocomplete[id]}
       renderInput={(params) => (
