@@ -13,14 +13,6 @@ export const fetchAutocomplete = createAsyncThunk(
 
 const initialState = {
   dates: {
-    // 1: new Date('1998-02-04T21:00:00').toDateString(),
-    // 2: new Date('2010-02-04T21:00:00').toDateString(),
-    // 3: new Date('2016-02-04T21:00:00').toDateString(),
-    // 4: new Date('2021-02-04T21:00:00').toDateString(),
-    // 1: new Date('1998-02-04T12:00:00'),
-    // 2: new Date('2010-02-04T12:00:00'),
-    // 3: new Date('2016-02-04T12:00:00'),
-    // 4: new Date('2021-02-04T12:00:00'),
     1: "04/02/1998",
     2: "04/02/2010",
     3: "04/02/2016",
@@ -125,7 +117,6 @@ export const tabelaSlice = createSlice({
     },
 
     setDateValue: (state, action) => {
-      console.log(action.payload)
       if (typeof state.dates[action.payload.dateId] != "undefined") {
         state.dates[action.payload.dateId] = action.payload.value;
       }

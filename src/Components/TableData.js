@@ -25,15 +25,14 @@ import {
   TableRow,
 } from "@material-ui/core";
 
-// import "date-fns";
-// import DateFnsUtils from "@date-io/date-fns";
+import { format } from "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
+// import MomentUtils from "@date-io/moment";
 
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-// pick a date util library
-import MomentUtils from "@date-io/moment";
 
 import {
   TableContainer,
@@ -95,21 +94,25 @@ const DateCell = (props) => {
       <KeyboardDatePicker
         style={{ width: "150px" }}
         variant="inline"
-        format="DD/MM/yyyy"
+        format="dd/MM/yyyy"
         value={instantDate}
         id={`inputdate${props.att.dateId}`}
         onChange={(date) => setInstantDate(date)}
-        onBlur={() => {
-          setDateValue({
-            value: instantDate,
-            dateId: props.att.dateId,
-          });
-        }}
         onClose={() => {
-          setDateValue({
-            value: instantDate,
-            dateId: props.att.dateId,
-          });
+          dispatch(
+            setDateValue({
+              value: format(instantDate, "dd/MM/yyyy"),
+              dateId: props.att.dateId,
+            })
+          );
+        }}
+        onBlur={() => {
+          dispatch(
+            setDateValue({
+              value: instantDate,
+              dateId: props.att.dateId,
+            })
+          );
         }}
       />
     </DataCell>
@@ -169,9 +172,6 @@ const CriaButtonAddDelRow = ({ index }) => {
 };
 
 const TabelaDados = () => {
-  // const data = useSelector(selectData);
-  // const dates = useSelector(selectDates);
-  // const ativos = useSelector(selectAtivos);
   const datesOrder = useSelector(selectDatesOrder);
   const ativosOrder = useSelector(selectAtivosOrder);
   const dispatch = useDispatch();
@@ -241,7 +241,7 @@ const TabelaDados = () => {
 
   return (
     <TableContainer>
-      <MuiPickersUtilsProvider utils={MomentUtils}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Table>
           <TableHead>
             <TableRow>{headerRow}</TableRow>
