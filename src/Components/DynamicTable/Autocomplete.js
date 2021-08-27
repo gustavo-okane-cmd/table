@@ -5,9 +5,9 @@ import {
   selectLoadingAutocomplete,
   selectOptions,
   fetchAutocomplete,
-} from "../store/reducers/autocompleteSlice";
+} from "../../store/reducers/autocompleteSlice";
 
-import { setAtivoValue, selectAtivos } from "../store/reducers/tabelaSlice";
+import { setAtivoValue, selectAtivos } from "../../store/reducers/tabelaSlice";
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";

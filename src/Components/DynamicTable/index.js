@@ -12,7 +12,7 @@ import {
   selectDatesOrder,
   selectAtivosOrder,
   selectData,
-} from "../store/reducers/tabelaSlice";
+} from "../../store/reducers/tabelaSlice";
 
 import TextField from "@material-ui/core/TextField";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
@@ -26,13 +26,14 @@ import {
 } from "@material-ui/core";
 
 import { format } from "date-fns";
+import { pt, en } from 'date-fns/locale'
+// import en from 'date-fns/locales/en';
+// import pt from 'date-fns/locales/pt';
+// import pt from '@date-io/date-fns/locales/pt';
 import DateFnsUtils from "@date-io/date-fns";
 // import MomentUtils from "@date-io/moment";
 
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 import {
   TableContainer,
@@ -42,14 +43,12 @@ import {
   PlusCell,
   SingleColumnCell,
   DataCell,
-} from "./TableDataStyles";
+} from "./styles";
 
 import AutocompleteField from "./Autocomplete";
+import DatePicker from "./DatePicker";
 
 const AutoCompleteCell = (props) => {
-  const ativos = useSelector(selectAtivos);
-  let [instantValue, setInstantValue] = useState(ativos[props.att.ativoId]);
-  const dispatch = useDispatch();
   return (
     <DataCell
       align="left"
@@ -57,33 +56,12 @@ const AutoCompleteCell = (props) => {
       key={`cellativo-${props.att.ativoId}`}
       style={{ margin: "2px" }}
     >
-      {/* <TextField
-        key={`inputativo${props.att.ativoId}`}
-        value={instantValue}
-        size="small"
-        style={{ width: "120px" }}
-        autoComplete="off"
-        onChange={(e) => setInstantValue(e.target.value)}
-        onBlur={(e) =>
-          dispatch(
-            setAtivoValue({
-              value: e.target.value,
-              ativoId: props.att.ativoId,
-            })
-          )
-        }
-      /> */}
       <AutocompleteField key={props.att.ativoId} id={props.att.ativoId} />
     </DataCell>
   );
 };
 
 const DateCell = (props) => {
-  const dates = useSelector(selectDates);
-  const dispatch = useDispatch();
-  let [instantDate, setInstantDate] = useState(
-    new Date(dates[props.att.dateId])
-  );
   return (
     <DataCell
       align="left"
@@ -91,7 +69,7 @@ const DateCell = (props) => {
       key={`celldate-${props.att.dateId}`}
       style={{ margin: "2px" }}
     >
-      <KeyboardDatePicker
+      {/* <KeyboardDatePicker
         style={{ width: "150px" }}
         variant="inline"
         format="dd/MM/yyyy"
@@ -114,7 +92,8 @@ const DateCell = (props) => {
             })
           );
         }}
-      />
+      /> */}
+      <DatePicker key={props.att.dateId} id={props.att.dateId} />
     </DataCell>
   );
 };
@@ -241,7 +220,8 @@ const TabelaDados = () => {
 
   return (
     <TableContainer>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <MuiPickersUtilsProvider utils={DateFnsUtils} locale={pt}>
+      {/* <MuiPickersUtilsProvider utils={DateFnsUtils}> */}
         <Table>
           <TableHead>
             <TableRow>{headerRow}</TableRow>

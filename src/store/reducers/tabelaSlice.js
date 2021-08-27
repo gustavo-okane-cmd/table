@@ -1,16 +1,6 @@
 import { createAsyncThunk, createSlice, unwrapResult } from "@reduxjs/toolkit";
 import { HYDRATE } from "next-redux-wrapper";
 
-export const fetchAutocomplete = createAsyncThunk(
-  "fetchAutocomplete",
-  async (searchTerm, { getState, requestId }) => {
-      const response = await axios.get(
-          `https://www.env2.node2.comdinheiro.com.br/Clientes/INTER_COMPARADOR/autocomplete.php?term=${searchTerm}&ativos=`
-      );
-      return response.data;
-  }
-);
-
 const initialState = {
   dates: {
     1: "04/02/1998",

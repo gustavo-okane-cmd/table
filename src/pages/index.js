@@ -4,7 +4,7 @@ import {
   Container,
 } from "@material-ui/core";
 
-import TabelaDados from '../Components/TableData'
+import TabelaDados from '../Components/DynamicTable'
 
 
 const Index = () => {
